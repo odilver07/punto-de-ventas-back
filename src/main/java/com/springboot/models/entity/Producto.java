@@ -7,6 +7,8 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Table;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import javax.persistence.Id;
 
 @Entity
@@ -17,14 +19,18 @@ public class Producto implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-	@Column(nullable = false, unique = true)
+//	@NotEmpty
+//	@Column(nullable = false, unique = true)
 	private String nombre;
 	
+//	@NotEmpty
 	@Column(nullable = false)
 	private double precio;
 	
+	@NotEmpty
 	private String descripcion;
 	
+//	@NotEmpty
 	@Column(nullable = false)
 	private int cantidad;
 

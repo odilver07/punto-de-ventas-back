@@ -4,10 +4,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -35,6 +40,11 @@ public class ProductoRestController {
 		return productoService.findAll();
 	}
 	
+	@GetMapping("/productos/page/{page}")
+	public Page<Producto> productosDisponiblesPorPagina(@PathVariable int page){
+		return productoService.findAll(PageRequest.of(page, 10));
+	}
+	
 	@GetMapping("/productos/{id}")
 	public ResponseEntity<?> findByIdProducto(@PathVariable Long id) {
 		Producto producto = null;
@@ -59,8 +69,25 @@ public class ProductoRestController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public ResponseEntity<?> saveProducto(@RequestBody Producto producto) {
 		Producto productoNew = null;
-		
 		Map<String, Object> request =  new HashMap<>();
+		
+		if(producto.getNombre().length() < 4 || producto.getNombre().length() > 55) {
+			request.put("mensaje", "Agregue un nombre correcto, debe tener entre 4 a 60 caracteres");
+			return new ResponseEntity<Map<String, Object>>(request, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		//Validar cantidades
+		if(producto.getCantidad() < 1) {
+			request.put("mensaje", "Agregue una cantidad adecuada no seas wey :v");
+			return new ResponseEntity<Map<String, Object>>(request, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		if(producto.getPrecio() <= 0) {
+			request.put("mensaje", "Agregue un precio adecuado para el producto");
+			return new ResponseEntity<Map<String, Object>>(request, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		//validar que haya conexion con la base de datos
 		try {
 			productoNew = productoService.save(producto);
 		}catch(DataAccessException e) {
@@ -73,18 +100,43 @@ public class ProductoRestController {
 		return new ResponseEntity<Map<String, Object>>(request,HttpStatus.CREATED);
 	}
 	
-	
 	@DeleteMapping("/productos/{id}")
-	@ResponseStatus(HttpStatus.NO_CONTENT)
-	public void deleteProductoById(@PathVariable Long id) {
-		productoService.delete(id);
+	public ResponseEntity<?> deleteProductoById(@PathVariable Long id) {
+		Producto producto =  productoService.findbyId(id);
+		Map<String, Object> request =  new HashMap<>();
+		
+		if(producto == null) {
+			request.put("mensaje", "El producto no existe");
+			return new ResponseEntity<Map<String, Object>>(request,HttpStatus.NOT_FOUND);
+		}
+		try {
+			productoService.delete(id);
+		}catch (DataAccessException e) {
+			request.put("mensaje", "No se pudo eliminar el producto");
+			request.put("error", e.getMessage().concat(": ").concat(e.getMostSpecificCause().getMessage()));
+			return new ResponseEntity<Map<String, Object>>(request,HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		request.put("mensaje", "Se elimino el producto ".concat(producto.getNombre()));
+		return new ResponseEntity<Map<String, Object>>(request,HttpStatus.NO_CONTENT);
+		
 	}
 	
 	@PutMapping("/productos/{id}")
 	public ResponseEntity<?> productoUpdate(@RequestBody Producto producto, @PathVariable Long id) {
+		Map<String, Object> request =  new HashMap<>();
+		
+		if(producto.getCantidad() < 1) {
+			request.put("mensaje", "Agregue una cantidad adecuada para el producto");
+			return new ResponseEntity<Map<String, Object>>(request, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
+		if(producto.getPrecio() <= 0) {
+			request.put("mensaje", "Agregue un precio adecuado para el producto");
+			return new ResponseEntity<Map<String, Object>>(request, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+		
 		Producto productoActual = productoService.findbyId(id);
 		Producto pUpdate = productoService.findbyId(id);
-		Map<String, Object> request =  new HashMap<>();
 		
 		if(productoActual == null) {
 			request.put("mensaje", "Error: Mo se pudo editar el producto");
