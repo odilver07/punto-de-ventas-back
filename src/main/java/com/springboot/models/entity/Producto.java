@@ -33,6 +33,8 @@ public class Producto implements Serializable{
 //	@NotEmpty
 	@Column(nullable = false)
 	private int cantidad;
+	
+	private String foto;
 
 	public Long getId() {
 		return id;
@@ -74,6 +76,14 @@ public class Producto implements Serializable{
 		this.cantidad = cantidad;
 	}
 	
+	public String getFoto() {
+		return foto;
+	}
+
+	public void setFoto(String foto) {
+		this.foto = foto;
+	}
+
 	/**
 	 * 
 	 */

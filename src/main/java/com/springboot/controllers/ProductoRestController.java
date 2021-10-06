@@ -1,18 +1,26 @@
 package com.springboot.controllers;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.validation.Valid;
+import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -21,8 +29,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import com.springboot.models.entity.Producto;
 import com.springboot.models.services.IProductoService;
@@ -110,6 +120,16 @@ public class ProductoRestController {
 			return new ResponseEntity<Map<String, Object>>(request,HttpStatus.NOT_FOUND);
 		}
 		try {
+			String nombreFotoAnterior =  producto.getFoto();
+			
+			if(nombreFotoAnterior != null  && nombreFotoAnterior.length() > 0) {
+				Path rutaFotoAnteorior = Paths.get("uploads").resolve(nombreFotoAnterior).toAbsolutePath();
+				File archivoFotoAnterior =  rutaFotoAnteorior.toFile();
+				if(archivoFotoAnterior.exists() && archivoFotoAnterior.canRead()) {
+					archivoFotoAnterior.delete();
+				}
+			}
+			
 			productoService.delete(id);
 		}catch (DataAccessException e) {
 			request.put("mensaje", "No se pudo eliminar el producto");
@@ -158,5 +178,57 @@ public class ProductoRestController {
 		request.put("mensaje", "El producto se ha actualizado con exito");
 		request.put("producto", pUpdate);
 		return new ResponseEntity<Map<String, Object>>(request,HttpStatus.CREATED);
+	}
+	
+	@PostMapping("/productos/upload")
+	public ResponseEntity<?> upload(@RequestParam("archivo") MultipartFile archivo, @RequestParam("id") Long id){
+		Map<String, Object> request =  new HashMap<>();
+		Producto producto = productoService.findbyId(id);
+		
+		if(!archivo.isEmpty()) {
+			String nombreArchivo = UUID.randomUUID().toString().concat("_").concat(archivo.getOriginalFilename().replace(" ", ""));
+			Path rutaArchivo = Paths.get("uploads").resolve(nombreArchivo).toAbsolutePath();
+			try {
+				Files.copy(archivo.getInputStream(), rutaArchivo);
+			} catch (IOException e) {
+				request.put("mensaje","Error al subir la imagen");
+				return new ResponseEntity<Map<String, Object>>(request, HttpStatus.INTERNAL_SERVER_ERROR);
+			}
+			
+			String nombreFotoAnterior =  producto.getFoto();
+			
+			if(nombreFotoAnterior != null  && nombreFotoAnterior.length() > 0) {
+				Path rutaFotoAnteorior = Paths.get("uploads").resolve(nombreFotoAnterior).toAbsolutePath();
+				File archivoFotoAnterior =  rutaFotoAnteorior.toFile();
+				if(archivoFotoAnterior.exists() && archivoFotoAnterior.canRead()) {
+					archivoFotoAnterior.delete();
+				}
+			}
+			
+			producto.setFoto(nombreArchivo);
+			productoService.save(producto);
+			request.put("producto", producto);
+			request.put("mensaje", "Has subido correctamente "+ archivo.getOriginalFilename());
+		}
+		return new ResponseEntity<Map<String, Object>>(request,HttpStatus.CREATED);
+	}
+	
+	@GetMapping("/uploads/img/{nombreFoto:.+}")
+	public ResponseEntity<Resource> verfoto(@PathVariable String nombreFoto){
+		Path rutaArchivo = Paths.get("uploads").resolve(nombreFoto).toAbsolutePath();
+		Resource recurso = null;
+		try {
+			recurso = new UrlResource(rutaArchivo.toUri());
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		
+		if(!recurso.exists() && !recurso.isReadable()) {
+			throw new RuntimeException("Errro no se pudo cargar la imagen "+ nombreFoto);
+		}
+		HttpHeaders  cabecera =  new HttpHeaders();
+		cabecera.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; file=\""+recurso.getFilename()+"\"");
+		
+		return new ResponseEntity<Resource>(recurso, cabecera, HttpStatus.OK);
 	}
 }
