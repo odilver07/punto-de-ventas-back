@@ -4,12 +4,17 @@ import java.io.Serializable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Entity
 @Table(name = "productos")
@@ -19,22 +24,35 @@ public class Producto implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 	
-//	@NotEmpty
 //	@Column(nullable = false, unique = true)
 	private String nombre;
 	
-//	@NotEmpty
+//	@NotNull
 	@Column(nullable = false)
 	private double precio;
 	
 	@NotEmpty
 	private String descripcion;
 	
-//	@NotEmpty
+//	@NotNull
 	@Column(nullable = false)
 	private int cantidad;
 	
 	private String foto;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "marca_id")
+	@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+//	@Column(nullable = false)
+	private Marca marca;
+	
+	public Marca getMarca() {
+		return marca;
+	}
+
+	public void setMarca(Marca marca) {
+		this.marca = marca;
+	}
 
 	public Long getId() {
 		return id;

@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.springboot.models.entity.Marca;
 import com.springboot.models.entity.Producto;
 import com.springboot.models.services.IProductoService;
 
@@ -168,6 +169,7 @@ public class ProductoRestController {
 			productoActual.setDescripcion(producto.getDescripcion());
 			productoActual.setNombre(producto.getNombre());
 			productoActual.setPrecio(producto.getPrecio());
+			productoActual.setMarca(producto.getMarca());
 			
 			pUpdate =  productoService.save(producto);
 		}catch (DataAccessException e) {
@@ -230,5 +232,10 @@ public class ProductoRestController {
 		cabecera.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; file=\""+recurso.getFilename()+"\"");
 		
 		return new ResponseEntity<Resource>(recurso, cabecera, HttpStatus.OK);
+	}
+	
+	@GetMapping("/marcas")
+	public List<Marca> listarMarcas(){
+		return productoService.findAllMarcas();
 	}
 }

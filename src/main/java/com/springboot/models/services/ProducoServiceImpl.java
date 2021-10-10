@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.springboot.models.dao.IProductoDao;
+import com.springboot.models.entity.Marca;
 import com.springboot.models.entity.Producto;
 
 @Service
@@ -44,6 +45,12 @@ public class ProducoServiceImpl implements IProductoService{
 	@Transactional(readOnly = true)
 	public Page<Producto> findAll(Pageable pageable) {
 		return productoDao.findAll(pageable);
+	}
+
+	@Override
+	@Transactional(readOnly = true)
+	public List<Marca> findAllMarcas() {
+		return productoDao.findAllMarcas();
 	}
 
 
