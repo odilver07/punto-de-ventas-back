@@ -238,4 +238,9 @@ public class ProductoRestController {
 	public List<Marca> listarMarcas(){
 		return productoService.findAllMarcas();
 	}
+	
+	@GetMapping("/productos/disponibles/{term}")
+	public List<Producto> buscarProductoPorNombre(@PathVariable String term){
+		return productoService.findByNombre(term);
+	}
 }

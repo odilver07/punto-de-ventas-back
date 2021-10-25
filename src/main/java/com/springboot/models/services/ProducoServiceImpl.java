@@ -53,5 +53,10 @@ public class ProducoServiceImpl implements IProductoService{
 		return productoDao.findAllMarcas();
 	}
 
+	@Override
+	public List<Producto> findByNombre(String term) {
+		return productoDao.findByNombreContainingIgnoreCase(term);
+	}
+
 
 }

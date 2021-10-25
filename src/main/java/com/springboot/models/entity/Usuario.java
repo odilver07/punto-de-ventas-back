@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
@@ -34,6 +35,9 @@ public class Usuario implements Serializable {
 
 	@Column(length = 30)
 	private String email;
+	
+	@OneToOne
+	private Carrito carrito;
 	
 	public Long getId() {
 		return id;

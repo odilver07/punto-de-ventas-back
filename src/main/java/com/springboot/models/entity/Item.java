@@ -2,26 +2,26 @@ package com.springboot.models.entity;
 
 import java.io.Serializable;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "roles")
-public class Role implements Serializable {
+@Table(name = "item")
+public class Item implements Serializable {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
-
-	@Column(unique = true, length = 20)
-	private String nombre;
 	
-	public Role() {}
-
+	@OneToOne
+	private Producto producto;
+	
+	private int cantidad;
+	
 	public Long getId() {
 		return id;
 	}
@@ -30,17 +30,24 @@ public class Role implements Serializable {
 		this.id = id;
 	}
 
-	public String getNombre() {
-		return nombre;
+	public Producto getProducto() {
+		return producto;
 	}
 
-	public void setNombre(String nombre) {
-		this.nombre = nombre;
+	public void setProducto(Producto producto) {
+		this.producto = producto;
+	}
+
+	public int getCantidad() {
+		return cantidad;
+	}
+
+	public void setCantidad(int cantidad) {
+		this.cantidad = cantidad;
 	}
 
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-
 }

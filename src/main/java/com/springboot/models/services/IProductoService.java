@@ -21,4 +21,6 @@ public interface IProductoService {
 	public void delete(Long id);
 	
 	public List<Marca> findAllMarcas();
+	
+	public List<Producto> findByNombre(String term);
 }

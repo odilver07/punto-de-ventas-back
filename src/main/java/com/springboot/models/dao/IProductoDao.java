@@ -11,6 +11,8 @@ import com.springboot.models.entity.Producto;
 public interface IProductoDao  extends JpaRepository<Producto, Long>{
 //HQL @Query
 	
+	public List<Producto> findByNombreContainingIgnoreCase(String term);
+	
 	@Query("from Marca")
 	public List<Marca> findAllMarcas();
 

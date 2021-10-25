@@ -1,6 +1,7 @@
 package com.springboot.models.entity;
 
 import java.io.Serializable;
+import java.text.DecimalFormat;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -45,6 +46,11 @@ public class Producto implements Serializable{
 	@JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
 //	@Column(nullable = false)
 	private Marca marca;
+	
+	public Double getMeses() {
+		DecimalFormat df = new DecimalFormat("#.00");
+		return Double.valueOf(df.format(this.precio/12));
+	}
 	
 	public Marca getMarca() {
 		return marca;

@@ -43,5 +43,10 @@ public class UsuarioService implements UserDetailsService,IUsuarioService {
 	public Usuario findByUsername(String username) {
 		return usuarioDao.findByUsername(username);
 	}
+
+	@Override
+	public Usuario guardarUsuario(Usuario usuario) {
+		return usuarioDao.save(usuario);
+	}
 	
 }
