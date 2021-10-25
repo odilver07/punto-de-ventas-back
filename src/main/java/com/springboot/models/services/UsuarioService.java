@@ -13,7 +13,11 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
+import com.springboot.models.dao.IItemDao;
+import com.springboot.models.dao.IRoleDao;
 import com.springboot.models.dao.IUsuarioDao;
+import com.springboot.models.entity.Item;
+import com.springboot.models.entity.Role;
 import com.springboot.models.entity.Usuario;
 
 @Service
@@ -21,6 +25,9 @@ public class UsuarioService implements UserDetailsService,IUsuarioService {
 
 	@Autowired
 	private IUsuarioDao usuarioDao;
+	
+	@Autowired
+	private IRoleDao roleDao;
 	
 	@Override
 	@Transactional(readOnly = true)
@@ -48,5 +55,12 @@ public class UsuarioService implements UserDetailsService,IUsuarioService {
 	public Usuario guardarUsuario(Usuario usuario) {
 		return usuarioDao.save(usuario);
 	}
+
+	@Override
+	public Role findByRole(Long id) {
+		return roleDao.findById(id).orElse(null);
+	}
+
+
 	
 }

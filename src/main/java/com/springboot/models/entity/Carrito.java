@@ -22,6 +22,8 @@ public class Carrito implements Serializable{
 	@OneToMany
 	List<Item> items;
 	
+	public Carrito() {}
+	
 	public Long getId() {
 		return id;
 	}

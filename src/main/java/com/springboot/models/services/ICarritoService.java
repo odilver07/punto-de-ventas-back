@@ -12,4 +12,6 @@ public interface ICarritoService {
 	public List<Item> findAllItem();
 	
 	public Carrito saveCarrito(Carrito carrito);
+	
+	public Carrito findById(Long id);
 }

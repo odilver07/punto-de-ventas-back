@@ -34,4 +34,9 @@ public class CarritoServiceImpl implements ICarritoService{
 		return carritoDao.save(carrito);
 	}
 
+	@Override
+	public Carrito findById(Long id) {
+		return carritoDao.findById(id).orElse(null);
+	}
+
 }
