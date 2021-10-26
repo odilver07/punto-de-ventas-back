@@ -2,6 +2,7 @@ package com.springboot.models.entity;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -20,6 +21,7 @@ public class Item implements Serializable {
 	@OneToOne
 	private Producto producto;
 	
+	@Column(updatable = true)
 	private int cantidad;
 	
 	public Long getId() {

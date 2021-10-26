@@ -11,6 +11,8 @@ public interface ICarritoService {
 	
 	public List<Item> findAllItem();
 	
+	public void actualizarCantidadItem(Long id, int cantidad);
+	
 	public Carrito saveCarrito(Carrito carrito);
 	
 	public Carrito findById(Long id);

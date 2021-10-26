@@ -1,5 +1,6 @@
 package com.springboot.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,11 +42,30 @@ public class CarritoController {
 	public Carrito guardarCarrito(@RequestBody Carrito carrito) {
 		Carrito carritoUpdate = carritoService.findById(carrito.getId());
 		List<Item> itemsOld = carritoUpdate.getItems();
+		System.out.println(itemsOld);
 		if(itemsOld.isEmpty()) {
 			carritoUpdate.setItems(carrito.getItems());
+			return carritoService.saveCarrito(carritoUpdate);
 		}else {
-			itemsOld.addAll(carrito.getItems());
-			carritoUpdate.setItems(itemsOld);
+			boolean unico = true;
+			for(int i = 0; i < carrito.getItems().size(); i++) {
+				unico = true;
+				for(int k = 0; k < itemsOld.size(); k++) {
+					if(carrito.getItems().get(i).getId() == itemsOld.get(k).getId()) {
+//						carritoUpdate.getItems().get(k).setCantidad(carritoUpdate.getItems().get(k).getCantidad()+
+//								carrito.getItems().get(i).getCantidad());
+						System.out.println(carrito.getItems().get(i).getId());
+						System.out.println(carrito.getItems().get(i).getCantidad());
+						System.out.println(itemsOld.get(k).getCantidad());
+						carritoService.actualizarCantidadItem(carrito.getItems().get(i).getId(), 
+								carrito.getItems().get(i).getCantidad() + itemsOld.get(k).getCantidad());
+						unico = false;
+					}
+				}
+				if(unico) {
+					carritoUpdate.getItems().add(carrito.getItems().get(i));
+				}
+			}
 		}
 		return carritoService.saveCarrito(carritoUpdate);
 	}
@@ -54,4 +74,5 @@ public class CarritoController {
 	public Carrito buscarCarritoByID(@PathVariable Long id) {
 		return carritoService.findById(id);
 	}
+	
 }

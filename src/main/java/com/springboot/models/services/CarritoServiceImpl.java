@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.springboot.models.dao.ICarritoDao;
 import com.springboot.models.dao.IItemDao;
@@ -38,5 +39,12 @@ public class CarritoServiceImpl implements ICarritoService{
 	public Carrito findById(Long id) {
 		return carritoDao.findById(id).orElse(null);
 	}
+
+	@Override
+	@Transactional
+	public void actualizarCantidadItem(Long id, int cantidad) {
+		itemDao.actualizarCantidadItem(id, cantidad);
+	}
+
 
 }
