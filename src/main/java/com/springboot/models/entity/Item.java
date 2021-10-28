@@ -24,6 +24,12 @@ public class Item implements Serializable {
 	@Column(updatable = true)
 	private int cantidad;
 	
+	
+	public double getTotal() {
+		
+		return cantidad * producto.getPrecio();
+	}
+	
 	public Long getId() {
 		return id;
 	}

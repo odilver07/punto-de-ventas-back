@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.springboot.models.dao.ICarritoDao;
+import com.springboot.models.dao.ICompraDao;
 import com.springboot.models.dao.IItemDao;
 import com.springboot.models.entity.Carrito;
+import com.springboot.models.entity.Compra;
 import com.springboot.models.entity.Item;
 
 @Service
@@ -19,6 +21,9 @@ public class CarritoServiceImpl implements ICarritoService{
 	
 	@Autowired
 	private IItemDao itemDao;
+	
+	@Autowired
+	private ICompraDao compraDao;
 	
 	@Override
 	public Item save(Item item) {
@@ -44,6 +49,18 @@ public class CarritoServiceImpl implements ICarritoService{
 	@Transactional
 	public void actualizarCantidadItem(Long id, int cantidad) {
 		itemDao.actualizarCantidadItem(id, cantidad);
+	}
+
+	@Override
+	public void vaciarCarrito(Long id) {
+		Carrito carritoUp =  carritoDao.findById(id).orElse(null);
+		carritoUp.getItems().clear();;
+		carritoDao.save(carritoUp);
+	}
+
+	@Override
+	public Compra guardarCompra(Compra compra) {
+		return compraDao.save(compra);
 	}
 
 

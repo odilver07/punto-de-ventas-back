@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.springboot.models.dao.IItemDao;
 import com.springboot.models.entity.Carrito;
+import com.springboot.models.entity.Compra;
 import com.springboot.models.entity.Item;
 import com.springboot.models.services.ICarritoService;
 
@@ -52,8 +53,6 @@ public class CarritoController {
 				unico = true;
 				for(int k = 0; k < itemsOld.size(); k++) {
 					if(carrito.getItems().get(i).getId() == itemsOld.get(k).getId()) {
-//						carritoUpdate.getItems().get(k).setCantidad(carritoUpdate.getItems().get(k).getCantidad()+
-//								carrito.getItems().get(i).getCantidad());
 						System.out.println(carrito.getItems().get(i).getId());
 						System.out.println(carrito.getItems().get(i).getCantidad());
 						System.out.println(itemsOld.get(k).getCantidad());
@@ -74,5 +73,19 @@ public class CarritoController {
 	public Carrito buscarCarritoByID(@PathVariable Long id) {
 		return carritoService.findById(id);
 	}
+	
+	@PutMapping("/vaciar/carrito/{id}")
+	public void vaciarCarrito(@PathVariable Long id) {
+		carritoService.vaciarCarrito(id);
+	}
+	
+	@PostMapping("/guardar/compra")
+	public Compra guardarCompra(@RequestBody Compra compra) {
+		Compra compraReturn =  carritoService.guardarCompra(compra);
+		carritoService.vaciarCarrito(compra.getUsuario().getId());
+		return compraReturn;
+	}
+	
+	
 	
 }
