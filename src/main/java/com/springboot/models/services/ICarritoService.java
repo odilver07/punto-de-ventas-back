@@ -21,4 +21,6 @@ public interface ICarritoService {
 	public void vaciarCarrito(Long id);
 	
 	public Compra guardarCompra(Compra compra);
+	
+	public List<Compra> obtenerComprasPorIdUsuario(Long id);
 }

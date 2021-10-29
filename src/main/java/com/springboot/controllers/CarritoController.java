@@ -29,6 +29,7 @@ public class CarritoController {
 	private ICarritoService carritoService;
 	
 	
+	
 	@GetMapping("/item/all")
 	public List<Item> findAllItem(){
 		return carritoService.findAllItem();
@@ -71,7 +72,21 @@ public class CarritoController {
 	
 	@GetMapping("/carrito/{id}")
 	public Carrito buscarCarritoByID(@PathVariable Long id) {
+		Carrito carritoNew = carritoService.findById(id);
+		for(int i = 0; i < carritoNew.getItems().size(); i++) {
+			for(int k = 0; k < carritoNew.getItems().size(); k++) {
+				if(carritoNew.getItems().get(i).getProducto().getId() ==
+					carritoNew.getItems().get(k).getProducto().getId() && i!=k) {
+					carritoService.actualizarCantidadItem(carritoNew.getItems().get(i).getId(),
+							carritoNew.getItems().get(i).getCantidad() + 
+							carritoNew.getItems().get(i).getCantidad() );
+					carritoNew.getItems().remove(k);
+				}
+			}
+		}
+		carritoService.saveCarrito(carritoNew);
 		return carritoService.findById(id);
+		
 	}
 	
 	@PutMapping("/vaciar/carrito/{id}")
@@ -84,6 +99,11 @@ public class CarritoController {
 		Compra compraReturn =  carritoService.guardarCompra(compra);
 		carritoService.vaciarCarrito(compra.getUsuario().getId());
 		return compraReturn;
+	}
+	
+	@GetMapping("/mis-compras/{id}")
+	public List<Compra> obtenerComprasPorIdU(@PathVariable Long id){
+		return carritoService.obtenerComprasPorIdUsuario(id);
 	}
 	
 	

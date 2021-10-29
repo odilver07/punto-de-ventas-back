@@ -63,5 +63,12 @@ public class CarritoServiceImpl implements ICarritoService{
 		return compraDao.save(compra);
 	}
 
+	@Override
+	public List<Compra> obtenerComprasPorIdUsuario(Long id) {
+		return compraDao.obtenerComprasPorIdUsuario(id);
+	}
+
+
+
 
 }
