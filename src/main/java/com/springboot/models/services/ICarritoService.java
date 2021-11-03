@@ -23,4 +23,8 @@ public interface ICarritoService {
 	public Compra guardarCompra(Compra compra);
 	
 	public List<Compra> obtenerComprasPorIdUsuario(Long id);
+	
+	public List<Compra> findAllCompras();
+	
+	public Compra compraFindId(Long id);
 }

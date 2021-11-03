@@ -36,6 +36,16 @@ public class Compra  implements Serializable{
 	private Usuario usuario;
 	
 	private Date fecha;
+	
+	private int enviado;
+
+	public int getEnviado() {
+		return enviado;
+	}
+
+	public void setEnviado(int enviado) {
+		this.enviado = enviado;
+	}
 
 	public long getId() {
 		return id;

@@ -11,4 +11,6 @@ public interface IUsuarioService {
 	public Usuario guardarUsuario(Usuario usuario);
 	
 	public Role findByRole(Long id);
+	
+	public Usuario findById(Long id);
 }

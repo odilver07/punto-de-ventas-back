@@ -13,10 +13,8 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 
-import com.springboot.models.dao.IItemDao;
 import com.springboot.models.dao.IRoleDao;
 import com.springboot.models.dao.IUsuarioDao;
-import com.springboot.models.entity.Item;
 import com.springboot.models.entity.Role;
 import com.springboot.models.entity.Usuario;
 
@@ -59,6 +57,11 @@ public class UsuarioService implements UserDetailsService,IUsuarioService {
 	@Override
 	public Role findByRole(Long id) {
 		return roleDao.findById(id).orElse(null);
+	}
+
+	@Override
+	public Usuario findById(Long id) {
+		return usuarioDao.findById(id).orElse(null);
 	}
 
 

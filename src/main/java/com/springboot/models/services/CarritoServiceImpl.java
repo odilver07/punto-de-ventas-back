@@ -68,6 +68,16 @@ public class CarritoServiceImpl implements ICarritoService{
 		return compraDao.obtenerComprasPorIdUsuario(id);
 	}
 
+	@Override
+	public List<Compra> findAllCompras() {
+		return compraDao.findAll();
+	}
+
+	@Override
+	public Compra compraFindId(Long id) {
+		return compraDao.findById(id).orElse(null);
+	}
+
 
 
 

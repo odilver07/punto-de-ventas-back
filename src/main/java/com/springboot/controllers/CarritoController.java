@@ -1,6 +1,7 @@
 package com.springboot.controllers;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,6 +97,7 @@ public class CarritoController {
 	
 	@PostMapping("/guardar/compra")
 	public Compra guardarCompra(@RequestBody Compra compra) {
+		compra.setFecha(new Date());
 		Compra compraReturn =  carritoService.guardarCompra(compra);
 		carritoService.vaciarCarrito(compra.getUsuario().getId());
 		return compraReturn;
@@ -106,6 +108,16 @@ public class CarritoController {
 		return carritoService.obtenerComprasPorIdUsuario(id);
 	}
 	
+	@GetMapping("/compras/admon")
+	public List<Compra> findAllCompras(){
+		return carritoService.findAllCompras();
+	}
 	
+	@PutMapping("/enviado/{id}/{enviado}")
+	public Compra compraEnviada(@PathVariable Long id, @PathVariable int enviado) {
+		Compra compraNew =  carritoService.compraFindId(id);
+		compraNew.setEnviado(enviado);
+		return carritoService.guardarCompra(compraNew);
+	}
 	
 }
